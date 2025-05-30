@@ -38,6 +38,9 @@ dependencies = [
     "litellm>=1.0.0",
     "jsonpickle>=3.0.0",
     "claude-test-reporter @ git+https://github.com/grahama1970/claude-test-reporter.git@main",
+    "fastapi>=0.115.12",
+    "uvicorn>=0.34.2",
+    "arxiv>=2.2.0",
 ]
 
 [project.optional-dependencies]
