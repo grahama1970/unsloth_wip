@@ -38,6 +38,9 @@ dependencies = [
     "litellm>=1.0.0",
     "jsonpickle>=3.0.0",
     "claude-test-reporter @ git+https://github.com/grahama1970/claude-test-reporter.git@main",
+    "fastapi>=0.115.12",
+    "uvicorn>=0.34.2",
+    "arxiv>=2.2.0",
 ]
 
 [project.optional-dependencies]
@@ -76,3 +79,10 @@ ignore_missing_imports = true
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["test_*.py", "*_test.py"]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.5",
+    "pytest-asyncio>=1.0.0",
+    "pytest-cov>=6.1.1",
+]
