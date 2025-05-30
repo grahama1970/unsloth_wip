@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "unsloth"
+version = "0.1.0"
+description = "Unsloth fine-tuning for LoRA adapters"
+requires-python = ">=3.10"
+dependencies = [
+    "typer>=0.16.0",
+    "rich>=14.0.0",
+    "loguru>=0.7.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.scripts]
+unsloth-cli = "unsloth.cli.main:app"
+
+[tool.setuptools]
+packages = ["unsloth"]
+package-dir = {"": "src"}
