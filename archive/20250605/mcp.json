@@ -1,0 +1,56 @@
+{
+  "name": "unsloth_wip",
+  "version": "1.0.0",
+  "description": "unsloth_wip - Granger spoke module with MCP prompts",
+  "author": "Granger Project",
+  "license": "MIT",
+  "runtime": "python",
+  "main": "src/unsloth/mcp/server.py",
+  "commands": {
+    "serve": {
+      "description": "Start the unsloth_wip MCP server",
+      "command": "python -m unsloth.mcp.server"
+    }
+  },
+  "prompts": {
+    "capabilities": {
+      "description": "List all available MCP server capabilities",
+      "slash_command": "/unsloth_wip:capabilities"
+    },
+    "help": {
+      "description": "Get context-aware help",
+      "slash_command": "/unsloth_wip:help",
+      "parameters": {
+        "context": {
+          "type": "string",
+          "description": "What you're trying to do"
+        }
+      }
+    },
+    "quick-start": {
+      "description": "Quick start guide for new users",
+      "slash_command": "/unsloth_wip:quick-start"
+    }
+  },
+  "capabilities": {
+    "tools": true,
+    "prompts": true,
+    "resources": false
+  },
+  "config_schema": {
+    "type": "object",
+    "properties": {
+      "log_level": {
+        "type": "string",
+        "description": "Logging level",
+        "default": "INFO",
+        "enum": [
+          "DEBUG",
+          "INFO",
+          "WARNING",
+          "ERROR"
+        ]
+      }
+    }
+  }
+}

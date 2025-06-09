@@ -1,0 +1,1405 @@
+Hello community. Great that you are
+
+back. We're talking about reinforcement
+
+learning for our large language model
+
+and we focus on a token entropy. Token
+
+entropy in itself does not exist because
+
+it refers to a token generation
+
+probability distribution not a specific
+
+token. But he ought to say hey
+
+throughout our paper we clarify that the
+
+token entropy that we are talking about
+
+refers to the entropy at a particular
+
+index t which is determined by the token
+
+generation probability distribution p
+
+rather than any specific token that is
+
+sampled here from the probability
+
+distribution. Now you remember in one of
+
+my last video we talked about a token
+
+entropy calculation and here you have it
+
+again beautiful and you remember the
+
+token entropy that we are talking about
+
+today is nothing else than the Shannon
+
+entropy of the predictive probability
+
+distribution P and as you can see here
+
+beautifully if we look at the
+
+mathematical formula for the probability
+
+we are summing here over all J's this
+
+mean over all token J's in the available
+
+vocabulary of our
+
+system. Now, whenever we say a high
+
+entropy token, just to make sure, it
+
+means a token that was generated at a
+
+particular time step t where the model's
+
+predictive distribution P of T for that
+
+step had a high entropy. Token entropy
+
+is not a property of a particular token
+
+O of T in isolation after it has been
+
+generated. It is a property of the model
+
+predictive probability distribution over
+
+all possible next token at the moment
+
+just before the token was sampled. Just
+
+think about quantum mechanics. So it
+
+quantifies here the model uncertainty at
+
+a specific generation step. That's all
+
+there is. Now we have some new insight
+
+and this is here beautifully. This is it
+
+already. If we have some reinforcement
+
+learning on some reward structure and we
+
+have a verifiable reward function,
+
+great. And we use policy gradients and
+
+not just Q function or maybe a soft
+
+actor critique system. Then we will see
+
+that we discover that there are two
+
+classes of token and there are what they
+
+call forking tokens where you here you
+
+have to decide now if you go left, right
+
+or straight ahead and those particular
+
+tokens that only about 20% of the tokens
+
+they deliver significant performance
+
+gains when especially when we scale with
+
+the model size. So if we have here and
+
+you see this here in the blue line, you
+
+have a reinforcement learning
+
+training not discriminating on any kind
+
+of token. This is identical for all
+
+tokens that we have in our vocabulary.
+
+You see here the accuracy and percentage
+
+for an 8B, 16, 14B and 32 billion free
+
+trainable parameter LLM. And you see the
+
+blue line of all tokens. Let's take
+
+AIM25. You see this is the blue line and
+
+this is the performance gain. If you
+
+improve here the model size and this is
+
+the better accuracy of the performance
+
+of the
+
+LLM. Now if you apply this reinforcement
+
+learning with a reward function and a
+
+verifiable reward only on a very tiny
+
+amount of those very specific high
+
+entropy minority tokens then you have
+
+here I think it's a dark orange line. So
+
+you see you get a much better
+
+performance because there's a difference
+
+if you have a 45% accuracy of your model
+
+or a 56%
+
+accuracy in this scales as you see here
+
+with the model size. So you will not see
+
+this effect at an 8B model. you have to
+
+go to models that have much more free
+
+trainable parameter much more capacity
+
+for developing this specific
+
+reinforcement learning training
+
+behavior. So we have really so many
+
+available neural network connectivity
+
+possibilities that really here a
+
+specialization in the token is
+
+happening. Great.
+
+Now here and the authors give us here
+
+the frequent token with the lowest
+
+average entropy and they say about 80%
+
+of all our tokens here have a real low
+
+average entropy. What does it means? The
+
+system knows exactly when to use a
+
+cosine a sinus um action and radius
+
+right left theta fraction. This is
+
+rather easy because the probability for
+
+this is
+
+defined. But let's look at here the
+
+tokens with the highest average entropy.
+
+Now this is where the reasoning process
+
+is actually going to happen and you can
+
+improve the reasoning process if you
+
+focus in the reinforcement learning on
+
+those tokens because if you increase
+
+here their entropy you can have a higher
+
+exploration rate compared to an
+
+exploitation rate of reinforcement
+
+learning. And it makes sense. No, you
+
+remember when we looked at the reasoning
+
+structure and the pattern that we read
+
+when the model the LLM the 03 model or I
+
+don't know 01 the new 01 0528 was
+
+reasoning you saw this now since this is
+
+the case or perhaps just here note or
+
+solving this particular problem or maybe
+
+or maybe not or actually so all those
+
+words are here if you want our indicator
+
+that tells us hey whatever we have those
+
+tokens in an auto reggressive model then
+
+there's a high entropy and this is here
+
+kind of a forking where the model can
+
+find new maybe better
+
+solution make sense beautiful let's have
+
+a look at the theory so H is the entropy
+
+of a complete probability distribution
+
+at a particular step t it is naturally
+
+to associate now this entropy in the
+
+simple terms here with the token that
+
+was eventually then sampled from that
+
+particular distribution at a time step t
+
+or t + 1. But you might say, hey, wait a
+
+minute, you already had a video on
+
+entropy. No, just days ago and we
+
+ignited there on EI entropy collapse.
+
+Yes, absolutely. And if you are here,
+
+subscribe to my channel. You saw already
+
+3 hours ago that I posted exactly this
+
+particular paper and I told you this
+
+paper here is a perfect continuation of
+
+my video from just two days ago.
+
+And I would like to show you if we take
+
+now multiple EI papers and I can show
+
+you that they all fit perfectly
+
+together. They illuminate the same
+
+problem from different perspective. But
+
+we can learn here from each and every
+
+single paper. So this is the paper of
+
+today. This is here from Qen. This is
+
+here 3rd of June 2025. Beyond the 8020
+
+rule, high entropy minority tokens they
+
+drive here the efficient reinforcement
+
+learning for the large language
+
+reasoning and of course in short side
+
+also of vision language model.
+
+Beautiful. So let's have a look what
+
+they tell
+
+us. They just tell us we analyze the
+
+underlying mechanism of reinforcement
+
+learning here through an innovative lens
+
+of the token entropy patterns. Now you
+
+know exactly what this means.
+
+Investigate in how tokens with varing
+
+entropy now you know exactly what this
+
+means impact the reasoning performance
+
+and this is all we are interested in. So
+
+they just tell us hey just to make sure
+
+we point out that we use here the chain
+
+of sort process for our LLMs and the
+
+entropy distribution for this chain of
+
+sort here exhibit here a distinct
+
+pattern where the majority of the tokens
+
+here in our chain of sort are generated
+
+with a low entropy.
+
+Everybody knows exactly what will be the
+
+next token. There is no high entropy at
+
+all. While a critical minority of those
+
+tokens here of the other tokens emerge
+
+now with a high entropy. So those are
+
+exactly those points here where the way
+
+in front of you forks up in left, right
+
+or straight on. Beautiful. And they say
+
+through comparing now the textual
+
+meaning of these two parts of different
+
+tokens we observe that the tokens with
+
+the lowest average entropy they just
+
+complete the ongoing linguistic
+
+structures. the ongoing linguistic
+
+sequence. While now it gets interesting,
+
+the tokens with the highest average
+
+entropy, they function here as pivotal
+
+decision points in the reasoning of the
+
+complete
+
+LLM that really determine the trajectory
+
+of the reasoning among multiple
+
+potential pathways. So those are the if
+
+you want a token where reasoning can be
+
+improved and I say quantitative results
+
+real that increasing now the entropy of
+
+those high entropy forking tokens leads
+
+now to a measurable improvement in the
+
+reasoning performance. So I say hey
+
+great I don't have now to reinforcement
+
+learning here on all tokens but I can
+
+reduce it here to just about 20% of the
+
+tokens which is great. It's faster, it
+
+costs costs less and we have a better
+
+performance. They say here by analyzing
+
+the evolution of token entropy during
+
+the reinforcement learning training, we
+
+find that the reasoning model largely
+
+retains the entropy patterns of the base
+
+model. Now this is important because
+
+this means whatever happened in the
+
+pre-training of the base model is the
+
+most important factor for the causal
+
+reasoning performance of this LLM. Even
+
+if you perform reinforcement learning to
+
+the
+
+max the authors tell us we find that the
+
+reasoning model largely retains the
+
+entropy pattern of the base model. So
+
+there's nothing new unique happening
+
+through the reinforcement learning. We
+
+just have patterns from the pre-training
+
+and those uh patterns are now
+
+reinforced. They are amplified but no
+
+new complete new design patterns are
+
+emerging. This means in exhibiting only
+
+gradual and relative minor changes as
+
+the training of our reinforcement
+
+learning with
+
+verifiable reward function progresses.
+
+This is important. It all depends on the
+
+quality of your base
+
+model. So this means reinforcement
+
+learning primarily changes the entropy
+
+of the already high entropy token while
+
+the entropy of the lower entropy token
+
+you know the other 80% of our tokens
+
+varies only within a very small range.
+
+It's not worth training those tokens at
+
+all. And they showed us you remember
+
+what I told you about the scaling of the
+
+model. A Cuban 332B model trained with
+
+only 20%. This high entropy tokens
+
+attain scores of something beautiful for
+
+a particular AIM24 and AM25 benchmark
+
+citing a new state of art for the
+
+reasoning model trained directly from
+
+base models with fewer than 800 billion
+
+parameters. So what a beautiful new
+
+methodology for reinforcement
+
+learning. And the authors tell us
+
+further studies and further
+
+investigation from their side here
+
+uncover that the high entropy minority
+
+token those 20% of all the token they
+
+account for nearly all performance gains
+
+in reinforcement learning. So this is
+
+now amazing reinforcement learning what
+
+we thought hey this is happening here to
+
+the all of our token this is here a
+
+unique here a coherence process over all
+
+probability distribution here. This is
+
+not anymore the case. Now with this
+
+study, we understand 80% of all the
+
+tokens that we have in our system are
+
+just here at low if you want surprise or
+
+a low entropy
+
+distribution. Only 20% is where it's
+
+really happening where new things can
+
+emerge new reasoning path will be will
+
+open up to us. So, and those are the
+
+tokens we have to focus for the
+
+reinforcement
+
+learning. Now, you know, DAPO, DAPO is
+
+one of the state-of-the-art
+
+reinforcement learning with verifiable
+
+reward algorithms without a value
+
+network. If you want to learn more about
+
+it, I have here a particular video where
+
+I introduced your DPO the four morning
+
+techniques with clip high and dynamic
+
+scamping and everything. There's a video
+
+for you if you want to have a deep dive
+
+in dapo. Now, do here we can now simply
+
+use here or modify for the highest
+
+entropy tokens. As you see here, we only
+
+have to modify two very simple terms in
+
+our code for DAPO. Here's a little bit
+
+of an explanation. And we can focus now
+
+on those 20% high entropy minority
+
+tokens. Great. What are the results?
+
+What is coming
+
+out? At first they show us okay tokens
+
+here with a higher initial entropy and
+
+those let's say here from 80% to 100%.
+
+So here we have a yeah if you have here
+
+the average change here in the entropy
+
+on a log scale. So here this is
+
+important no while look at the if you
+
+want tokens here with a very low entropy
+
+here the percentile here if you're
+
+somewhere here between I don't know 10
+
+and 40 almost nothing is happening we
+
+are 10 minus 4 here on average change
+
+function so this is almost staying the
+
+same whatever happens the change after
+
+the reinforcement learning so what's
+
+happening what is changing is here 80%
+
+to 100% this is our 20% high entropy
+
+token
+
+structures now the result let's have a
+
+look here at a cubin 32b base model and
+
+this is reinforcement learning on the
+
+space model and this is the result now
+
+now you have double with all the tokens
+
+or we have noticed selective double
+
+process reinforcement learning focused
+
+on the 20% forking tokens what is now if
+
+we have different accuracy beautiful
+
+what is our overall improvement and
+
+let's just look here at
+
+AIM25 the difference between those two
+
+models if we have a D on all tokens or
+
+test on the 20 forking tokens is plus
+
+11%.
+
+Now 11% of performance increase is
+
+something I would apply in my code
+
+because I say yeah this is something
+
+whatever is above I don't know 2 3 4 5%
+
+definitely worth it try it out however
+
+and this is just to show you if you have
+
+a QN3 and this is a good amen 3 is a
+
+perfect model and 8 billion free
+
+trainable parameter a base model where
+
+you have not a reinforcement learning
+
+applied on you see in a25 we just have a
+
+below to 1% improvement. So you see
+
+those tiny little 8B models they are not
+
+mighty enough they don't have the
+
+resources enough to develop those
+
+specification now in the if you want
+
+token functionalization they are not
+
+able to really benefit from this
+
+methodology but if you go with a 32
+
+billion model yes you see that's going
+
+up now it would be really interesting if
+
+you go even to higher model sizes if
+
+this performance indicator would
+
+continue to climb up.
+
+Okay, about details. Yeah, I would love
+
+to explain this to you because this is
+
+something I looked at said I have no
+
+clue what this means because why do we
+
+have suddenly a temperature here and we
+
+have here okay a combined aim score of
+
+24 and 25 but what is red and what is
+
+blue and what the hell is going on here?
+
+Okay, I have a hit threshold of one in
+
+my temperature. But why suddenly you
+
+have a temperature
+
+here? So if you're new to AI just tag an
+
+explanation, you know when an RM
+
+generates a text, it does so in a
+
+sequence predicting the next token based
+
+on the input and the token it has
+
+already generated an auto reggressive
+
+system. And at each step, the model
+
+doesn't just pick one token. It
+
+calculates a probability for every
+
+possible token from its vocabulary to be
+
+the next one. Now before those
+
+probabilities are now finalized, the
+
+model outputs you a raw unnormalized
+
+score for each token in the vocabulary.
+
+And this scores what we call
+
+logits. A higher logit for a token
+
+simply means that the token that the
+
+model thinks that this token is more
+
+likely to be the next. A lower logic
+
+means it's less likely to be the next
+
+token predicted. Now with the softmax
+
+function we have a simple function that
+
+converts our logic now to probabilities
+
+and this is what we need for a GBT
+
+system. So to turn this ledger into a
+
+proper probability distribution where
+
+all the probabilities sum up to equal
+
+one. The softmax function is typically
+
+applied or you can take advant further
+
+advanced softmax function. But why is it
+
+called a temperature? It comes from
+
+statistical mechanic and especially from
+
+the Boltzman distribution where it
+
+describes a probability of the system
+
+being in a certain state. In physics we
+
+have state and in AI we have certain
+
+states. Beautiful. As a function of its
+
+energy and its temperature. Now in real
+
+theoretical physics a higher temperature
+
+leads to more exploration of higher
+
+energy states. This means high energy is
+
+less probable states. And the
+
+temperature term comes now from
+
+statistical mechanic the Boltzman
+
+distribution. And over there if we have
+
+a lower temperature it is more focused,
+
+more predictable. It is more
+
+conservative in its thinking in its
+
+reasoning. It makes the out the
+
+probability distribution sharper. You
+
+know the peak is more pronounced and we
+
+have a lower effect of entropy during
+
+now the sampling from this distribution.
+
+Exactly the opposite for higher
+
+temperature, more random, more diverse,
+
+more if you want to call it creative but
+
+less coherent. So it makes all the
+
+distribution much flatter, more uniform,
+
+higher effective entropy during the
+
+sampling. The model becomes more random,
+
+more likely to pick less probable
+
+tokens. So we have a higher exploration
+
+of the complete
+
+space and this of course encourages here
+
+a more exploration oriented model in the
+
+reinforcement learning training. So this
+
+is what we want to achieve if we want to
+
+find new solution
+
+paths. Now the same is now coming from
+
+statistical mechanics. If we apply it
+
+here in EI, we have now if you want a
+
+decoding temperature, it is simply a
+
+hyperparameter that controls here also
+
+the randomness. So if you want to use
+
+here the human word, the creativity of
+
+the LLM output by adjusting now the
+
+logits. We exactly defined what the
+
+logits are before the softmax function
+
+is applied. So if you want we have
+
+additional parameter to play around a
+
+little bit here with what we later
+
+identify as the randomness of the output
+
+of the LLM. So you see rather simple.
+
+Now let's come to this particular
+
+visualization. As you see we have a red
+
+curve here and we have a blue curve here
+
+clunk. And we have a beautiful if you
+
+want limit here at t= 1 which is our
+
+pure soft max. So what is the red curve
+
+and what is the blue curve? Now this
+
+artificial hyperparameter what we call
+
+uh decoding
+
+temperature is now that we fix here for
+
+the red curve the t low equal one. So we
+
+have a standard temperature for the
+
+nonforking tokens and we vary the
+
+temperature for the forking forking
+
+tokens across the range from 0.05 05 to
+
+let's say five and then you plot just
+
+the average aim benchmark score against
+
+this and this is here the red line for
+
+the blue line we do exactly the opposite
+
+we fix now the standard temperature for
+
+the forking tokens and vary now the
+
+temperature for the nonforking tokens in
+
+our system and then we do the same we
+
+plot to the average aim 2425 score
+
+benchmarks against this
+
+temperature. Just remember temperature
+
+here is an
+
+experimental hyper variable applied
+
+during our decoding. So this shows us
+
+here this figure how the performance
+
+changes when we artificially modulate
+
+the sampling behavior at different token
+
+types by changing the decoding
+
+temperature. Now let's interpret here
+
+the red curve here. Right?
+
+So when the temperature is very low here
+
+somewhere you know the forking tokens
+
+are generated very deterministically
+
+greediling performance is poor you see
+
+we have 68% or whatever if we increase
+
+now this temperature towards one and
+
+slightly beyond maybe a two or three you
+
+see here is the maximum maybe at 2 and a
+
+half or
+
+somewhere we have now a key finding
+
+making the model more random more
+
+exploratory this means with a higher
+
+effective If sampling entropy
+
+specifically at this high entropy
+
+forking points helps it to reason
+
+better. We are here at the maximum of
+
+our red curve. It needs here the freedom
+
+to explore different pier at those
+
+junctures. And if then we increase the
+
+temperature even more and we go here to
+
+five, you see the performance drops here
+
+catastrophically because the choices
+
+become now too random and just
+
+nonsensical.
+
+So it's a very very delicate equilibrium
+
+and you remember this is the same in
+
+reinforcement learning. I told you this
+
+is a very delicate equilibrium between
+
+the exploitation of known solution path
+
+and the exploration to find new solution
+
+path. This is what you see here and the
+
+blue curve is not exactly for the
+
+opposite. This is here when the T low is
+
+around one as you see here in the blue
+
+line the performance is decent. If the
+
+temperature increased significantly and
+
+the performance drops now in the blue
+
+line also almost to zero. Well, that's
+
+exactly what we expected. Again, two
+
+random nonsensical output. Very poor
+
+reasoning. But even if we now reduce if
+
+you want a temperature, the performance
+
+here on the blue line doesn't change
+
+really a lot of no might simply degrade
+
+a little bit from 71, but 71 71 71 70.5.
+
+Okay. suggesting that these tokens are
+
+already quite deterministic and forcing
+
+them to be even more so doesn't help or
+
+even slightly hurts the performance of
+
+the complete
+
+system. So varying out the temperature
+
+for the non-forking tokens is not really
+
+helpful. We should focus here on our
+
+forking tokens on our
+
+20%. And this is it. But now I would
+
+like to take another exercise with you.
+
+Let's extend this knowledge that we just
+
+gained. Let's extend it and add it to
+
+the knowledge from uh from the last
+
+video where I talked about entropy in
+
+AI. And I told you there and I showed
+
+you two different studies and we looked
+
+at one study where we discovered if we
+
+look at the co-variance distribution it
+
+was the Q1
+
+2.57B we discovered if we look here at
+
+the token there's a very very tiny
+
+amount of token here that have if you
+
+look at the co-variance here a very high
+
+value this means this is an absolute
+
+outlier because you see overall we at 03
+
+Beautiful but for a very tiny amount
+
+this is a magnificent
+
+outlier. So small portion of token
+
+exhibit extreme high coarience four
+
+exceeding the average this is here this
+
+outlier token take here the dominant
+
+part in triggering here the entropy
+
+collapse and entropy collapse was
+
+exactly what was the main topic of this
+
+video and how to avoid the entropy
+
+collapse. This means to have enough
+
+andropy left that we have an exploration
+
+phase and not just an exploitation phase
+
+of our AI. And you know the solution
+
+that we found is we have an advanced
+
+clip coariant module and a coolback lila
+
+divergence covariant version that helped
+
+us here with positive coariances that
+
+detach the gradients and on the other
+
+hand apply a cool lava paly on token
+
+with the largest covariance.
+
+Consequently, we had a policy model is
+
+KP the low entropy trap and it could
+
+achieve a better performance on the
+
+mathematical reasoning performance of
+
+our EI system. Now, if we combine the
+
+last video and this video, you might
+
+say, does it contradict? Is it
+
+supporting? Now, what is it? Is it of a
+
+different perspective? Let's have a look
+
+at this. So all the three papers from
+
+this two video correlate and they offer
+
+now interestingly if you look at them to
+
+get a more complete picture of the
+
+reinforcement learning dynamics that we
+
+encounter now in large language models
+
+brand new research. So everything that
+
+we have now in our training of the
+
+reinforcement learning training the
+
+early training here at the beginning
+
+here or when we encounter a new
+
+difficult part of a problem the LLM
+
+might be at a forking token position
+
+it's internal policy assigns here a real
+
+high entropy to this step the LLM is
+
+completely unsure here in its
+
+probability distribution which path to
+
+take next and the insight is here the
+
+reinforcement should focus here on this
+
+particular forking tokens, this high
+
+entropy minority tokens. And through a
+
+reinforcement learning training update,
+
+the model learns that this particular
+
+token here for example is a good choice
+
+at this particular point where we fork
+
+here and we will discover multiple new
+
+reasoning
+
+paths. Now last time video here is about
+
+successful learning the transition to
+
+the high coariance. So after one or more
+
+successful updates related to choosing
+
+now this particular token X here at a
+
+specific forking point, the model's
+
+policy will now change. It will now
+
+assign a higher probability to this
+
+particular token in this context. So if
+
+this token now consistently leads to a
+
+higher reward function, a higher reward
+
+for the system itself back propagating
+
+here, then this specific token position
+
+will now start to exhibit a high
+
+coariance. So you know pi our policy
+
+lock pi is now high that means the model
+
+is confidence in its confident in its
+
+choice. So this successfully learned
+
+once uncertain forking token has now
+
+become a high coarance token and if we
+
+keep reinforcing it it will continue
+
+significantly to reducing the policy
+
+entropy. So now we are talking about a
+
+policy entropy and you know what happens
+
+if we increase the policy entropy the
+
+policy entropy will collapse. So careful
+
+this is now another interconnected
+
+system heaven's sake and we have to be
+
+careful how we treat now these high
+
+coariance tokens and you remember I
+
+showed you two
+
+solutions but if we look now at the
+
+complete system knowing this the content
+
+of the three AI papers I could say hey
+
+those are all just two sides of the same
+
+coin if we look at optimizing the
+
+reinforcement learning process for
+
+reasoning LLMs now The one side that we
+
+look today in this video focuses on
+
+improving the quality of the decision at
+
+certain uncertain points in its decision
+
+pathway in its probability
+
+distribution. And my last video was the
+
+other focus is here on maintaining the
+
+capacity of the system overall for
+
+exploration for having enough entropy
+
+left so that we do not encounter the
+
+entropy collapse that the entropy goes
+
+to zero and the system always takes the
+
+same solution. We have only one solution
+
+path and the system will always perform
+
+the same algorithm to come to the u
+
+solution of a particular problem. it
+
+will never dare to explore new paths.
+
+This means we are locked into a box and
+
+we do not want our AI systems to be
+
+locked. We want our AI system to have a
+
+little bit of an entropy left that
+
+sometimes you know like a quantum
+
+fluctuation. It breaks out of our
+
+shredding cat box that it keeps con
+
+confined and it discovers you new
+
+learning path, new solution path. So the
+
+continued learning of this LLM can
+
+continue. Okay, this is it. I hope you
+
+had a little bit of fun. I had fun
+
+reading the paper going in detail. You
+
+have a lot of numerical result. Please
+
+have a look at the data yourself. Have a
+
+look at the annex. There's a lot of
+
+information hidden there. But then try
+
+to sit back, relax and then imagine you
+
+see all the three paper in front of you
+
+and understand how they are connected,
+
+what their inside means. And this was
+
+here the main topic of this particular
+
+video because I wanted to show you if
+
+you read multiple papers and you ask
+
+yourself how are they connected? At
+
+first, it's a lot of fun to ask yourself
+
+those questions and you will get a lot
+
+of deeper insight into like today how to
+
+optimize reinforcement learning for our
+
+reasoning LLMs. I hope you enjoyed it.
+
+Why not subscribe? I see you in my next
+
+video.

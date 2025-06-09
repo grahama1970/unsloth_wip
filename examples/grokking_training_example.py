@@ -65,7 +65,7 @@ def visualize_grokking_phases(log_dir: Path):
             # Save plot
             output_path = log_dir.parent / "grokking_phases.png"
             plt.savefig(output_path, dpi=150, bbox_inches='tight')
-            print(f"📊 Saved grokking visualization to {output_path}")
+            print(f" Saved grokking visualization to {output_path}")
             
     except Exception as e:
         print(f"⚠️  Could not create visualization: {e}")
@@ -75,7 +75,7 @@ def main():
     """Demonstrate grokking-based training."""
     setup_logging(log_file=Path("logs/grokking_training.log"))
     
-    print("🧠 Grokking Training Example")
+    print(" Grokking Training Example")
     print("=" * 50)
     print("This will train for MANY epochs (90 instead of 3)")
     print("Initial performance may seem poor, but patience leads to superior results!")
@@ -160,7 +160,7 @@ def main():
         use_grokking=True
     )
     
-    print("\n📋 Grokking Configuration:")
+    print("\n Grokking Configuration:")
     print(f"   - Original epochs: 3")
     print(f"   - Grokking epochs: {config.num_train_epochs}")
     print(f"   - Weight decay: {config.weight_decay}")
@@ -174,7 +174,7 @@ def main():
     print("   4. Grokking: Sudden drop in validation loss")
     print("   5. Convergence: Both losses stabilize at low values")
     
-    print("\n🚀 Starting grokking training...")
+    print("\n Starting grokking training...")
     print(f"   Monitor progress: tensorboard --logdir {config.tensorboard_log_dir}")
     
     # Initialize trainer
@@ -184,7 +184,7 @@ def main():
         # Train with grokking
         results = trainer.train()
         
-        print("\n✅ Grokking training completed!")
+        print("\n Grokking training completed!")
         print(f"   - Total training time: {results['training_time'] / 3600:.2f} hours")
         print(f"   - Final train loss: {results['train_result'].get('train_loss', 'N/A')}")
         print(f"   - Final eval loss: {results['train_result'].get('eval_loss', 'N/A')}")
@@ -192,7 +192,7 @@ def main():
         # Create visualization
         visualize_grokking_phases(Path(config.tensorboard_log_dir))
         
-        print("\n🎯 Grokking Benefits:")
+        print("\n Grokking Benefits:")
         print("   - Superior generalization compared to early stopping")
         print("   - Better handling of edge cases")
         print("   - More robust to distribution shifts")
@@ -206,13 +206,13 @@ def main():
         print("   - Monitoring phases to estimate completion")
         
     except Exception as e:
-        print(f"\n❌ Training failed: {e}")
+        print(f"\n Training failed: {e}")
         raise
         
     finally:
         trainer.cleanup()
         
-    print("\n📚 Further Reading:")
+    print("\n Further Reading:")
     print("   - Original paper: 'Grokking: Generalization Beyond Overfitting'")
     print("   - Recent advances: docs/correspondence/grokking_technique.md")
     print("   - TensorBoard logs: View phases and transitions")

@@ -1,13 +1,15 @@
 """Logging utilities."""
+Module: logging.py
+Description: Functions for logging operations
 
 import sys
 from pathlib import Path
-from typing import Optional
+
 from loguru import logger
 
 
 def setup_logging(
-    log_file: Optional[Path] = None,
+    log_file: Path | None = None,
     level: str = "INFO",
     rotation: str = "10 MB",
     retention: str = "1 week",
@@ -25,7 +27,7 @@ def setup_logging(
     """
     # Remove default handler
     logger.remove()
-    
+
     # Add console handler
     logger.add(
         sys.stderr,
@@ -33,7 +35,7 @@ def setup_logging(
         level=level,
         colorize=True
     )
-    
+
     # Add file handler if specified
     if log_file:
         logger.add(
@@ -44,5 +46,5 @@ def setup_logging(
             retention=retention,
             compression="zip"
         )
-        
+
     logger.info(f"Logging initialized at level {level}")

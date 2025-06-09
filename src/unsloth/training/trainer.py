@@ -1,19 +1,41 @@
-"""Main training module for Unsloth fine-tuning with LoRA adapters."""
+"""
+Module: trainer.py
+Description: Main training module for Unsloth fine-tuning with LoRA adapters
 
-import os
-import json
-from pathlib import Path
-from typing import Optional, Dict, Any, List
+External Dependencies:
+- torch: https://pytorch.org/docs/stable/index.html
+- transformers: https://huggingface.co/docs/transformers/
+- unsloth: https://github.com/unslothai/unsloth
+- trl: https://huggingface.co/docs/trl/
+- loguru: https://loguru.readthedocs.io/
+
+Sample Input:
+>>> config = TrainingConfig(model_name="unsloth/Phi-3.5-mini-instruct")
+>>> trainer = UnslothTrainer(config)
+
+Expected Output:
+>>> result = trainer.train(dataset)
+>>> result.adapter_path
+Path("outputs/lora_adapter")
+
+Example Usage:
+>>> from unsloth.training.trainer import UnslothTrainer
+>>> trainer = UnslothTrainer(config)
+>>> trainer.train()
+"""
+
 from datetime import datetime
+from pathlib import Path
+from typing import Any
 
 import torch
 from datasets import Dataset, load_dataset
-from transformers import TrainingArguments
-from trl import SFTTrainer
-from unsloth import FastLanguageModel
 from loguru import logger
 from pydantic import BaseModel, Field
-from tenacity import retry, stop_after_attempt, wait_exponential
+from transformers import TrainingArguments
+from trl import SFTTrainer
+
+from unsloth import FastLanguageModel
 
 from ..core.config import TrainingConfig
 from ..data.loader import ArangoDBDataLoader
@@ -26,31 +48,31 @@ class TrainingResult(BaseModel):
     model_name: str
     dataset_name: str
     training_time: float
-    final_loss: Optional[float] = None
-    metrics: Dict[str, Any] = Field(default_factory=dict)
+    final_loss: float | None = None
+    metrics: dict[str, Any] = Field(default_factory=dict)
 
 
 class UnslothTrainer:
     """Unified trainer for Unsloth fine-tuning with support for various datasets."""
-    
+
     def __init__(self, config: TrainingConfig):
         """Initialize the trainer with configuration."""
         self.config = config
         self.model = None
         self.tokenizer = None
         self.trainer = None
-        
+
     def setup_model(self) -> None:
         """Setup the model and tokenizer with LoRA configuration."""
         logger.info(f"Loading model: {self.config.model_name}")
-        
+
         self.model, self.tokenizer = FastLanguageModel.from_pretrained(
             model_name=self.config.model_name,
             max_seq_length=self.config.max_seq_length,
             dtype=self.config.dtype,
             load_in_4bit=self.config.load_in_4bit,
         )
-        
+
         # Setup LoRA adapters
         self.model = FastLanguageModel.get_peft_model(
             self.model,
@@ -64,9 +86,9 @@ class UnslothTrainer:
             use_rslora=self.config.use_rslora,
             loftq_config=self.config.loftq_config,
         )
-        
+
         logger.info("Model and LoRA adapters configured successfully")
-        
+
     def load_dataset(self) -> Dataset:
         """Load and prepare the dataset based on configuration."""
         if self.config.dataset_source == "arangodb":
@@ -78,25 +100,25 @@ class UnslothTrainer:
                 metadata_filters=self.config.metadata_filters
             )
             dataset = loader.load_dataset()
-            
+
         elif self.config.dataset_source == "huggingface":
             # Load from HuggingFace
             dataset = load_dataset(
                 self.config.dataset_path,
                 split=self.config.dataset_split
             )
-            
+
         else:
             raise ValueError(f"Unknown dataset source: {self.config.dataset_source}")
-            
+
         logger.info(f"Loaded dataset with {len(dataset)} samples")
         return dataset
-        
+
     def prepare_dataset(self, dataset: Dataset) -> Dataset:
         """Apply chat template and tokenization to the dataset."""
         # Get appropriate chat template
         chat_template = self._get_chat_template()
-        
+
         # Apply template to dataset
         if "messages" in dataset.column_names:
             # Already in chat format (e.g., from ArangoDB)
@@ -119,13 +141,13 @@ class UnslothTrainer:
                     )
                 }
             )
-            
+
         return dataset
-        
+
     def _get_chat_template(self) -> str:
         """Get the appropriate chat template for the model."""
         model_lower = self.config.model_name.lower()
-        
+
         if "phi" in model_lower:
             return "<|user|>\n{question}<|end|>\n<|assistant|>\n{answer}<|end|>"
         elif "llama" in model_lower:
@@ -133,7 +155,7 @@ class UnslothTrainer:
         else:
             # Default ShareGPT style
             return "### Human: {question}\n\n### Assistant: {answer}"
-            
+
     def setup_training_args(self) -> TrainingArguments:
         """Setup training arguments."""
         return TrainingArguments(
@@ -161,18 +183,18 @@ class UnslothTrainer:
             report_to=self.config.report_to,
             run_name=self.config.run_name,
         )
-        
+
     def train(self) -> TrainingResult:
         """Execute the training process."""
         start_time = datetime.now()
-        
+
         # Setup model
         self.setup_model()
-        
+
         # Load and prepare dataset
         dataset = self.load_dataset()
         dataset = self.prepare_dataset(dataset)
-        
+
         # Split dataset if needed
         if self.config.validation_split > 0 and "train" not in dataset:
             split = dataset.train_test_split(test_size=self.config.validation_split)
@@ -181,10 +203,10 @@ class UnslothTrainer:
         else:
             train_dataset = dataset
             eval_dataset = None
-            
+
         # Setup training arguments
         training_args = self.setup_training_args()
-        
+
         # Initialize trainer
         self.trainer = SFTTrainer(
             model=self.model,
@@ -197,26 +219,26 @@ class UnslothTrainer:
             packing=self.config.packing,
             args=training_args,
         )
-        
+
         # Train
         logger.info("Starting training...")
         self.trainer.train()
-        
+
         # Save adapter
         adapter_path = Path(self.config.output_dir) / "final_adapter"
         logger.info(f"Saving adapter to {adapter_path}")
         self.model.save_pretrained(adapter_path)
         self.tokenizer.save_pretrained(adapter_path)
-        
+
         # Calculate training time
         training_time = (datetime.now() - start_time).total_seconds()
-        
+
         # Get final metrics
         metrics = {}
         if self.trainer.state.log_history:
             final_log = self.trainer.state.log_history[-1]
             metrics = {k: v for k, v in final_log.items() if isinstance(v, (int, float))}
-            
+
         result = TrainingResult(
             adapter_path=adapter_path,
             model_name=self.config.model_name,
@@ -225,10 +247,10 @@ class UnslothTrainer:
             final_loss=metrics.get("loss"),
             metrics=metrics
         )
-        
+
         logger.info(f"Training completed in {training_time:.2f} seconds")
         return result
-        
+
     def cleanup(self):
         """Cleanup resources after training."""
         if self.model:

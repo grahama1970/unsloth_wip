@@ -1,13 +1,14 @@
 """Inference module for generating text with fine-tuned models."""
+Module: generate.py
 
 from pathlib import Path
-from typing import Optional, List, Dict, Any, Union
 
 import torch
-from transformers import TextStreamer
-from unsloth import FastLanguageModel
 from loguru import logger
 from pydantic import BaseModel, Field
+from transformers import TextStreamer
+
+from unsloth import FastLanguageModel
 
 
 class GenerationConfig(BaseModel):
@@ -24,10 +25,10 @@ class GenerationConfig(BaseModel):
 
 class InferenceEngine:
     """Engine for running inference with fine-tuned models."""
-    
+
     def __init__(
         self,
-        model_path: Union[str, Path],
+        model_path: str | Path,
         device: str = "cuda",
         load_in_4bit: bool = True,
         max_seq_length: int = 2048
@@ -47,29 +48,29 @@ class InferenceEngine:
         self.max_seq_length = max_seq_length
         self.model = None
         self.tokenizer = None
-        
+
     def load_model(self) -> None:
         """Load the model and tokenizer."""
         logger.info(f"Loading model from {self.model_path}")
-        
+
         # Check if this is an adapter or full model
         adapter_config = self.model_path / "adapter_config.json"
         is_adapter = adapter_config.exists()
-        
+
         if is_adapter:
             # Load base model and adapter
             import json
-            with open(adapter_config, 'r') as f:
+            with open(adapter_config) as f:
                 config = json.load(f)
             base_model = config.get("base_model_name_or_path", "unsloth/Phi-3.5-mini-instruct")
-            
+
             self.model, self.tokenizer = FastLanguageModel.from_pretrained(
                 model_name=base_model,
                 max_seq_length=self.max_seq_length,
                 dtype=None,
                 load_in_4bit=self.load_in_4bit,
             )
-            
+
             # Load adapter
             self.model = FastLanguageModel.get_peft_model(
                 self.model,
@@ -83,16 +84,16 @@ class InferenceEngine:
                 dtype=None,
                 load_in_4bit=self.load_in_4bit,
             )
-            
+
         # Enable fast inference
         FastLanguageModel.for_inference(self.model)
         logger.info("Model loaded successfully")
-        
+
     def generate(
         self,
         prompt: str,
-        config: Optional[GenerationConfig] = None,
-        system_prompt: Optional[str] = None
+        config: GenerationConfig | None = None,
+        system_prompt: str | None = None
     ) -> str:
         """
         Generate text from a prompt.
@@ -107,9 +108,9 @@ class InferenceEngine:
         """
         if self.model is None:
             self.load_model()
-            
+
         config = config or GenerationConfig()
-        
+
         # Format prompt with chat template
         messages = self._format_messages(prompt, system_prompt)
         formatted_prompt = self.tokenizer.apply_chat_template(
@@ -117,7 +118,7 @@ class InferenceEngine:
             tokenize=False,
             add_generation_prompt=True
         )
-        
+
         # Tokenize
         inputs = self.tokenizer(
             formatted_prompt,
@@ -126,10 +127,10 @@ class InferenceEngine:
             truncation=True,
             max_length=self.max_seq_length
         ).to(self.device)
-        
+
         # Setup streamer if needed
         streamer = TextStreamer(self.tokenizer, skip_prompt=True) if config.stream else None
-        
+
         # Generate
         with torch.no_grad():
             outputs = self.model.generate(
@@ -145,19 +146,19 @@ class InferenceEngine:
                 pad_token_id=self.tokenizer.pad_token_id,
                 eos_token_id=self.tokenizer.eos_token_id,
             )
-            
+
         # Decode output
         generated_ids = outputs[0][inputs.input_ids.shape[-1]:]
         generated_text = self.tokenizer.decode(generated_ids, skip_special_tokens=True)
-        
+
         return generated_text
-        
+
     def generate_batch(
         self,
-        prompts: List[str],
-        config: Optional[GenerationConfig] = None,
-        system_prompt: Optional[str] = None
-    ) -> List[str]:
+        prompts: list[str],
+        config: GenerationConfig | None = None,
+        system_prompt: str | None = None
+    ) -> list[str]:
         """
         Generate text for multiple prompts.
         
@@ -171,9 +172,9 @@ class InferenceEngine:
         """
         if self.model is None:
             self.load_model()
-            
+
         config = config or GenerationConfig()
-        
+
         # Format all prompts
         all_formatted = []
         for prompt in prompts:
@@ -184,7 +185,7 @@ class InferenceEngine:
                 add_generation_prompt=True
             )
             all_formatted.append(formatted)
-            
+
         # Tokenize batch
         inputs = self.tokenizer(
             all_formatted,
@@ -193,7 +194,7 @@ class InferenceEngine:
             truncation=True,
             max_length=self.max_seq_length
         ).to(self.device)
-        
+
         # Generate
         with torch.no_grad():
             outputs = self.model.generate(
@@ -208,31 +209,31 @@ class InferenceEngine:
                 pad_token_id=self.tokenizer.pad_token_id,
                 eos_token_id=self.tokenizer.eos_token_id,
             )
-            
+
         # Decode outputs
         results = []
         for i, output in enumerate(outputs):
             generated_ids = output[inputs.input_ids[i].shape[-1]:]
             generated_text = self.tokenizer.decode(generated_ids, skip_special_tokens=True)
             results.append(generated_text)
-            
+
         return results
-        
-    def _format_messages(self, prompt: str, system_prompt: Optional[str] = None) -> List[Dict[str, str]]:
+
+    def _format_messages(self, prompt: str, system_prompt: str | None = None) -> list[dict[str, str]]:
         """Format messages for chat template."""
         messages = []
-        
+
         if system_prompt:
             messages.append({"role": "system", "content": system_prompt})
-            
+
         messages.append({"role": "user", "content": prompt})
-        
+
         return messages
-        
+
     def chat(
         self,
-        config: Optional[GenerationConfig] = None,
-        system_prompt: Optional[str] = None
+        config: GenerationConfig | None = None,
+        system_prompt: str | None = None
     ) -> None:
         """
         Interactive chat mode.
@@ -243,27 +244,27 @@ class InferenceEngine:
         """
         if self.model is None:
             self.load_model()
-            
+
         config = config or GenerationConfig(stream=True)
-        
+
         print("Chat mode started. Type 'exit' to quit.")
         if system_prompt:
             print(f"System: {system_prompt}")
         print("-" * 50)
-        
+
         while True:
             try:
                 user_input = input("\nYou: ")
                 if user_input.lower() in ['exit', 'quit', 'bye']:
                     print("Goodbye!")
                     break
-                    
+
                 print("\nAssistant: ", end="", flush=True)
                 response = self.generate(user_input, config, system_prompt)
-                
+
                 if not config.stream:
                     print(response)
-                    
+
             except KeyboardInterrupt:
                 print("\n\nGoodbye!")
                 break

@@ -29,12 +29,12 @@ def main():
     # Setup logging
     setup_logging(log_file=Path("logs/full_pipeline.log"), level="INFO")
     
-    print("🚀 Starting full Unsloth pipeline example")
+    print(" Starting full Unsloth pipeline example")
     
     # ========================================
     # Step 1: Create Evaluation Set
     # ========================================
-    print("\n📊 Step 1: Creating evaluation set with rephrased questions...")
+    print("\n Step 1: Creating evaluation set with rephrased questions...")
     
     eval_config = EvaluationConfig(
         eval_set_size=0.05,  # 5% of data
@@ -54,7 +54,7 @@ def main():
             source_path,
             eval_output_path
         )
-        print(f"✅ Evaluation set created: {eval_file}")
+        print(f" Evaluation set created: {eval_file}")
         print(f"   - Total examples: {eval_stats['total_examples']}")
         print(f"   - Evaluation examples: {eval_stats['evaluation_examples']}")
         print(f"   - Rephrasing success: {eval_stats['rephrasing_success_rate']:.1f}%")
@@ -122,7 +122,7 @@ def main():
         run_name="phi35-arangodb-enhanced"
     )
     
-    print(f"📋 Configuration:")
+    print(f" Configuration:")
     print(f"   - Model: {config.model_name}")
     print(f"   - LoRA rank: {config.lora_r} (alpha: {config.lora_alpha})")
     print(f"   - Learning rate: {config.learning_rate}")
@@ -132,8 +132,8 @@ def main():
     # ========================================
     # Step 3: Train with Enhanced Monitoring
     # ========================================
-    print("\n🎓 Step 3: Training with enhanced monitoring...")
-    print(f"   💡 Monitor training in TensorBoard:")
+    print("\n Step 3: Training with enhanced monitoring...")
+    print(f"    Monitor training in TensorBoard:")
     print(f"      tensorboard --logdir {config.tensorboard_log_dir}")
     
     # Initialize trainer
@@ -143,7 +143,7 @@ def main():
     try:
         results = trainer.train()
         
-        print("\n✅ Training completed successfully!")
+        print("\n Training completed successfully!")
         print(f"   - Training time: {results['training_time']:.2f} seconds")
         print(f"   - Final loss: {results['train_result'].get('train_loss', 'N/A')}")
         print(f"   - Adapter saved to: {results['adapter_path']}")
@@ -155,7 +155,7 @@ def main():
             print(f"   - Eval perplexity: {results['train_result']['eval_perplexity']:.2f}")
             
     except Exception as e:
-        print(f"❌ Training failed: {e}")
+        print(f" Training failed: {e}")
         raise
     finally:
         trainer.cleanup()
@@ -163,7 +163,7 @@ def main():
     # ========================================
     # Step 4: Test Inference
     # ========================================
-    print("\n🔍 Step 4: Testing inference with trained model...")
+    print("\n Step 4: Testing inference with trained model...")
     
     # Initialize inference engine
     engine = InferenceEngine(
@@ -185,7 +185,7 @@ def main():
         top_p=0.9
     )
     
-    print("\n📝 Sample generations:")
+    print("\n Sample generations:")
     for i, prompt in enumerate(test_prompts, 1):
         print(f"\n{i}. Question: {prompt}")
         response = engine.generate(prompt, gen_config)
@@ -194,20 +194,20 @@ def main():
     # ========================================
     # Step 5: Summary and Next Steps
     # ========================================
-    print("\n📊 Pipeline Summary:")
+    print("\n Pipeline Summary:")
     print(f"   1. Evaluation set: {'Created' if eval_file else 'Using standard split'}")
     print(f"   2. Model trained: {config.model_name}")
     print(f"   3. Adapter location: {results['adapter_path']}")
     print(f"   4. TensorBoard logs: {config.tensorboard_log_dir}")
     
-    print("\n🚀 Next steps:")
+    print("\n Next steps:")
     print("   1. View training metrics in TensorBoard")
     print("   2. Upload adapter to HuggingFace Hub:")
     print(f"      unsloth-cli upload {results['adapter_path']} <username/model-name>")
     print("   3. Run comprehensive evaluation:")
     print(f"      python examples/evaluate_model.py --adapter {results['adapter_path']}")
     
-    print("\n✨ Full pipeline completed successfully!")
+    print("\n Full pipeline completed successfully!")
 
 
 if __name__ == "__main__":

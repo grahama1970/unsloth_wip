@@ -7,7 +7,7 @@ load_dotenv('../.env')
 
 def format_to_openai_messages(prompt: str, completion: str = None) -> list:
     """Format a prompt-completion pair into a conversation list."""
-    conversation = [{"role": "user", "content": prompt}]  # Use model's expected format directly
+    conversation = [{"role": "user", "content": prompt}]  # Use model's expected format directly'
     if completion:
         conversation.append({"role": "assistant", "content": completion})
     return conversation

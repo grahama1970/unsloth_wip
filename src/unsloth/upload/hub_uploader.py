@@ -1,38 +1,39 @@
 """Upload trained models to Hugging Face Hub."""
+Module: hub_uploader.py
 
-import os
 import json
+import os
 import shutil
-from pathlib import Path
-from typing import Dict, Any, Optional, List
 from datetime import datetime
+from pathlib import Path
+from typing import Any
 
-from huggingface_hub import HfApi, create_repo, upload_folder, ModelCard
-from loguru import logger
 import yaml
+from huggingface_hub import HfApi, ModelCard, create_repo, upload_folder
+from loguru import logger
 
 
 class HubUploader:
     """Upload LoRA adapters to Hugging Face Hub."""
-    
-    def __init__(self, token: Optional[str] = None):
+
+    def __init__(self, token: str | None = None):
         """Initialize the uploader."""
         self.token = token or os.getenv("HF_TOKEN")
         if not self.token:
             raise ValueError("HF_TOKEN not found in environment")
-            
+
         self.api = HfApi(token=self.token)
-        
+
     async def upload_adapter(
         self,
         adapter_path: Path,
         model_id: str,
         base_model: str,
-        training_stats: Optional[Dict[str, Any]] = None,
+        training_stats: dict[str, Any] | None = None,
         private: bool = True,
         create_model_card: bool = True,
-        tags: Optional[List[str]] = None
-    ) -> Dict[str, Any]:
+        tags: list[str] | None = None
+    ) -> dict[str, Any]:
         """
         Upload a LoRA adapter to Hugging Face Hub.
         
@@ -49,7 +50,7 @@ class HubUploader:
             Upload results dictionary
         """
         logger.info(f"Uploading adapter to: {model_id}")
-        
+
         try:
             # Create repository
             logger.info("Creating repository...")
@@ -60,16 +61,16 @@ class HubUploader:
                 exist_ok=True,
                 repo_type="model"
             )
-            
+
             # Prepare files
             upload_path = self._prepare_upload_files(
-                adapter_path, 
+                adapter_path,
                 base_model,
                 training_stats,
                 create_model_card,
                 tags
             )
-            
+
             # Upload files
             logger.info("Uploading files...")
             upload_info = upload_folder(
@@ -78,11 +79,11 @@ class HubUploader:
                 token=self.token,
                 commit_message=f"Upload LoRA adapter trained on {base_model}"
             )
-            
+
             # Cleanup temp files
             if upload_path != adapter_path:
                 shutil.rmtree(upload_path)
-                
+
             result = {
                 "status": "success",
                 "model_id": model_id,
@@ -91,10 +92,10 @@ class HubUploader:
                 "commit_info": upload_info,
                 "private": private
             }
-            
+
             logger.info(f"Upload successful: {result['url']}")
             return result
-            
+
         except Exception as e:
             logger.error(f"Upload failed: {e}")
             return {
@@ -102,14 +103,14 @@ class HubUploader:
                 "error": str(e),
                 "model_id": model_id
             }
-            
+
     def _prepare_upload_files(
         self,
         adapter_path: Path,
         base_model: str,
-        training_stats: Optional[Dict[str, Any]],
+        training_stats: dict[str, Any] | None,
         create_model_card: bool,
-        tags: Optional[List[str]]
+        tags: list[str] | None
     ) -> Path:
         """Prepare files for upload."""
         # If we need to add files, create a temp directory
@@ -119,7 +120,7 @@ class HubUploader:
             upload_path = temp_path
         else:
             upload_path = adapter_path
-            
+
         # Create model card if requested
         if create_model_card:
             model_card = self._create_model_card(
@@ -129,31 +130,31 @@ class HubUploader:
             )
             with open(upload_path / "README.md", "w") as f:
                 f.write(str(model_card))
-                
+
         # Save training stats if provided
         if training_stats:
             with open(upload_path / "training_stats.json", "w") as f:
                 json.dump(training_stats, f, indent=2)
-                
+
         # Update adapter config with base model info
         config_path = upload_path / "adapter_config.json"
         if config_path.exists():
-            with open(config_path, "r") as f:
+            with open(config_path) as f:
                 config = json.load(f)
             config["base_model_name_or_path"] = base_model
             with open(config_path, "w") as f:
                 json.dump(config, f, indent=2)
-                
+
         return upload_path
-        
+
     def _create_model_card(
         self,
         base_model: str,
-        training_stats: Optional[Dict[str, Any]] = None,
-        tags: Optional[List[str]] = None
+        training_stats: dict[str, Any] | None = None,
+        tags: list[str] | None = None
     ) -> ModelCard:
         """Create a model card for the adapter."""
-        
+
         # Default tags
         default_tags = [
             "lora",
@@ -162,10 +163,10 @@ class HubUploader:
             base_model.split("/")[-1],
             "text-generation"
         ]
-        
+
         if tags:
             default_tags.extend(tags)
-            
+
         # Extract key stats
         if training_stats:
             enhancement_stats = training_stats.get("steps", {}).get("enhancement", {})
@@ -173,7 +174,7 @@ class HubUploader:
         else:
             enhancement_stats = {}
             training_info = {}
-            
+
         # Create card content
         card_content = f"""---
 tags:
@@ -230,14 +231,14 @@ response = tokenizer.decode(outputs[0], skip_special_tokens=True)
 ## Training Configuration
 
 """
-        
+
         if training_info:
             metrics = training_info.get("metrics", {})
             card_content += f"""
 - Final Loss: {metrics.get('loss', 'N/A')}
 - Training Location: {training_info.get('training_location', 'N/A')}
 """
-            
+
         card_content += """
 ## Limitations
 
@@ -256,19 +257,19 @@ If you use this model, please cite:
 }
 ```
 """
-        
+
         return ModelCard(card_content)
-        
+
     async def create_collection(
         self,
         collection_name: str,
-        model_ids: List[str],
+        model_ids: list[str],
         description: str,
         private: bool = False
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Create a collection of related models."""
         logger.info(f"Creating collection: {collection_name}")
-        
+
         try:
             # Create collection using the API
             collection = self.api.create_collection(
@@ -277,7 +278,7 @@ If you use this model, please cite:
                 namespace=os.getenv("HF_USERNAME"),
                 private=private
             )
-            
+
             # Add models to collection
             for model_id in model_ids:
                 self.api.add_collection_item(
@@ -285,14 +286,14 @@ If you use this model, please cite:
                     item_id=model_id,
                     item_type="model"
                 )
-                
+
             return {
                 "status": "success",
                 "collection_name": collection_name,
                 "collection_url": f"https://huggingface.co/collections/{collection.slug}",
                 "models_added": len(model_ids)
             }
-            
+
         except Exception as e:
             logger.error(f"Collection creation failed: {e}")
             return {
@@ -304,7 +305,7 @@ If you use this model, please cite:
 async def main():
     """Example usage."""
     uploader = HubUploader()
-    
+
     # Upload adapter
     result = await uploader.upload_adapter(
         adapter_path=Path("./outputs/adapter"),
@@ -321,7 +322,7 @@ async def main():
         },
         tags=["student-teacher", "enhanced-thinking"]
     )
-    
+
     print(json.dumps(result, indent=2))
 
 

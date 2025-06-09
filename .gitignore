@@ -47,6 +47,33 @@ htmlcov/
 .mypy_cache/
 .ruff_cache/
 
+# Security - API keys and secrets
+.mcp.json
+.env
+
+# Build artifacts
+*.egg-info/
+src/*.egg-info/
+
+# Logs
+logs/
+*.log
+
+# Test outputs
+test-results.xml
+.coverage.*
+coverage.xml
+test_dashboard_output/
+
+# Temporary files
+*.bak
+*.backup
+*.tmp
+*.temp
+*~
+.*.swp
+.*.swo
+
 # Data files
 *.db
 *.sqlite
@@ -55,3 +82,8 @@ data/
 outputs/
 models/
 checkpoints/
+
+# Embedded git repositories
+repos/ADVANCED-fine-tuning/
+repos/unsloth/
+runpod_ops_project/
