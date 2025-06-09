@@ -51,6 +51,8 @@ dependencies = [
     "pydantic-settings>=2.9.1",
     "aiohttp>=3.12.4",
     "runpod_ops @ git+https://github.com/grahama1970/runpod_ops.git",
+    "arangodb @ git+https://github.com/grahama1970/arangodb.git",
+    "marker @ git+https://github.com/grahama1970/marker.git",
 ]
 
 [project.optional-dependencies]
