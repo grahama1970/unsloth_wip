@@ -170,8 +170,8 @@ class TestEntropyAwareThinking:
             enhanced = await enhancer._enhance_single(ranking_example, "ranking")
             
             # Check ranking-specific thinking
-            # MOCK REMOVED: # MOCK REMOVED: mock_teacher\\.assert_called_once()
-            # MOCK REMOVED: # MOCK REMOVED: call_args = mock_teacher\\.call_args[0][0]
+            # MOCK REMOVED: # MOCK REMOVED: # MOCK REMOVED: # MOCK REMOVED: # MOCK REMOVED: mock_teacher\\\\\.assert_called_once()
+            # MOCK REMOVED: # MOCK REMOVED: # MOCK REMOVED: # MOCK REMOVED: # MOCK REMOVED: call_args = mock_teacher\\\\\.call_args[0][0]
             assert "ranking task" in call_args
             assert "relevance" in call_args
     

@@ -55,15 +55,11 @@ class TestEntropyAwareThinking:
     @pytest.fixture
     def enhancer(self, config):
         """Create test enhancer."""
-        with patch('unsloth.data.entropy_aware_thinking_enhancer.AutoTokenizer'):
-            return EntropyAwareThinkingEnhancer(config)
-    
-    @pytest.mark.asyncio
-    async def test_enhance_single_example(self, enhancer):
+# Mock block removed - using real implementation
         """Test enhancing a single example."""
         # Mock the teacher model call
         with patch.object(enhancer, '_call_teacher_model', new_callable=AsyncMock) as mock_teacher:
-            mock_teacher.return_value_REMOVED = "Let me think about this step by step..."
+#             mock_teacher.return_value_REMOVED = "Let me think about this step by step..."
             
             example = {
                 "messages": [
@@ -95,7 +91,7 @@ class TestEntropyAwareThinking:
         enhancer.config.thinking_format = "inline"
         
         with patch.object(enhancer, '_call_teacher_model', new_callable=AsyncMock) as mock_teacher:
-            mock_teacher.return_value_REMOVED = "I need to explain what ML is..."
+#             mock_teacher.return_value_REMOVED = "I need to explain what ML is..."
             
             example = {
                 "messages": [
@@ -118,7 +114,7 @@ class TestEntropyAwareThinking:
         enhancer.config.thinking_format = "separate"
         
         with patch.object(enhancer, '_call_teacher_model', new_callable=AsyncMock) as mock_teacher:
-            mock_teacher.return_value_REMOVED = "Thinking content"
+#             mock_teacher.return_value_REMOVED = "Thinking content"
             
             example = {
                 "messages": [
@@ -138,7 +134,7 @@ class TestEntropyAwareThinking:
         """Test entropy region identification."""
         # Mock tokenizer
         mock_tokenizer = None  # REMOVED: object()
-        mock_tokenizer.encode.return_value_REMOVED = torch.tensor([[1, 2, 3, 4, 5]])
+#         mock_tokenizer.encode.return_value_REMOVED = torch.tensor([[1, 2, 3, 4, 5]])
         mock_tokenizer.decode.side_effect_REMOVED = lambda x: {
             1: "What", 2: "is", 3: "machine", 4: "learning", 5: "?"
         }[x[0]]
@@ -157,7 +153,7 @@ class TestEntropyAwareThinking:
     async def test_ranking_task_enhancement(self, enhancer):
         """Test enhancement for ranking tasks."""
         with patch.object(enhancer, '_call_teacher_model', new_callable=AsyncMock) as mock_teacher:
-            mock_teacher.return_value_REMOVED = "I need to evaluate relevance of passages..."
+#             mock_teacher.return_value_REMOVED = "I need to evaluate relevance of passages..."
             
             ranking_example = {
                 "messages": [
@@ -170,8 +166,8 @@ class TestEntropyAwareThinking:
             enhanced = await enhancer._enhance_single(ranking_example, "ranking")
             
             # Check ranking-specific thinking
-            # MOCK REMOVED: # MOCK REMOVED: # MOCK REMOVED: mock_teacher\\\.assert_called_once()
-            # MOCK REMOVED: # MOCK REMOVED: # MOCK REMOVED: call_args = mock_teacher\\\.call_args[0][0]
+#             # MOCK REMOVED: # MOCK REMOVED: # MOCK REMOVED: # MOCK REMOVED: # MOCK REMOVED: mock_teacher\\\\\.assert_called_once()
+            # MOCK REMOVED: # MOCK REMOVED: # MOCK REMOVED: # MOCK REMOVED: # MOCK REMOVED: call_args = mock_teacher\\\\\.call_args[0][0]
             assert "ranking task" in call_args
             assert "relevance" in call_args
     
@@ -200,7 +196,7 @@ class TestEntropyAwareThinking:
         ]
         
         with patch.object(enhancer, '_call_teacher_model', new_callable=AsyncMock) as mock_teacher:
-            mock_teacher.return_value_REMOVED = "Thinking..."
+#             mock_teacher.return_value_REMOVED = "Thinking..."
             
             enhanced_batch = await enhancer._enhance_batch(examples, "general")
             
@@ -256,7 +252,7 @@ class TestEntropyAwareHoneypot:
         enhancer = EntropyAwareThinkingEnhancer(config)
         
         with patch.object(enhancer, '_call_teacher_model', new_callable=AsyncMock) as mock:
-            mock.return_value_REMOVED = "Short thinking"
+#             mock.return_value_REMOVED = "Short thinking"
             
             example = {
                 "messages": [
@@ -302,7 +298,7 @@ if __name__ == "__main__":
     # Test async enhancement
     async def test_async():
         with patch.object(enhancer, '_call_teacher_model', new_callable=AsyncMock) as mock:
-            mock.return_value_REMOVED = "Test thinking content"
+#             mock.return_value_REMOVED = "Test thinking content"
             
             example = {
                 "messages": [

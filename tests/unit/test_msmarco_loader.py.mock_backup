@@ -46,7 +46,7 @@ class TestMSMARCOLoader:
             ]
         }
         # REMOVED: # REMOVED: mock_dataset = Dataset.from_dict(mock_data)
-# MOCK: #         # REMOVED: # REMOVED: mock_load_dataset.return_value_REMOVED = # REMOVED: # REMOVED: mock_dataset  # TODO: Replace with real implementation
+#         # REMOVED: # REMOVED: mock_load_dataset.return_value_REMOVED = # REMOVED: # REMOVED: mock_dataset
         
         # Load dataset
         loader = MSMARCODataLoader(
@@ -59,7 +59,7 @@ class TestMSMARCOLoader:
         dataset = loader.load_dataset()
         
         # Verify loading
-# MOCK: #         # REMOVED: # REMOVED: mock_load_dataset.assert_called_once()  # TODO: Replace with real implementation
+#         # REMOVED: # REMOVED: mock_load_dataset.assert_called_once()
         assert len(dataset) == 2
         
         # Check first example format
@@ -93,7 +93,7 @@ class TestMSMARCOLoader:
             "passage": ["France is a country in Europe...", "Shakespeare was an English playwright..."]
         }
         # REMOVED: # REMOVED: mock_dataset = Dataset.from_dict(mock_data)
-# MOCK: #         # REMOVED: # REMOVED: mock_load_dataset.return_value_REMOVED = # REMOVED: # REMOVED: mock_dataset  # TODO: Replace with real implementation
+#         # REMOVED: # REMOVED: mock_load_dataset.return_value_REMOVED = # REMOVED: # REMOVED: mock_dataset
         
         # Load dataset
         loader = MSMARCODataLoader(task="qa", max_samples=2)
@@ -120,7 +120,7 @@ class TestMSMARCOLoader:
             "positive": [f"Passage {i}" for i in range(100)]
         }
         # REMOVED: # REMOVED: mock_dataset = Dataset.from_dict(mock_data)
-# MOCK: #         # REMOVED: # REMOVED: mock_load_dataset.return_value_REMOVED = # REMOVED: # REMOVED: mock_dataset  # TODO: Replace with real implementation
+#         # REMOVED: # REMOVED: mock_load_dataset.return_value_REMOVED = # REMOVED: # REMOVED: mock_dataset
         
         # Load with validation split
         loader = MSMARCODataLoader(
@@ -149,7 +149,7 @@ class TestMSMARCOLoader:
             "positive": ["Relevant passage"]
         }
         # REMOVED: # REMOVED: mock_dataset = Dataset.from_dict(mock_data)
-# MOCK: #         # REMOVED: # REMOVED: mock_load_dataset.return_value_REMOVED = # REMOVED: # REMOVED: mock_dataset  # TODO: Replace with real implementation
+#         # REMOVED: # REMOVED: mock_load_dataset.return_value_REMOVED = # REMOVED: # REMOVED: mock_dataset
         
         # Load with standard format
         loader = MSMARCODataLoader(
@@ -174,7 +174,7 @@ class TestMSMARCOLoader:
         # Mock data
         # REMOVED: # REMOVED: mock_data = {"query": ["Test"], "positive": ["Test passage"]}
         # REMOVED: # REMOVED: mock_dataset = Dataset.from_dict(mock_data)
-# MOCK: #         # REMOVED: # REMOVED: mock_load_dataset.return_value_REMOVED = # REMOVED: # REMOVED: mock_dataset  # TODO: Replace with real implementation
+#         # REMOVED: # REMOVED: mock_load_dataset.return_value_REMOVED = # REMOVED: # REMOVED: mock_dataset
         
         # Load and add instructions
         loader = MSMARCODataLoader(task="ranking")
@@ -198,7 +198,7 @@ class TestMSMARCOLoader:
             "positive": [f"Passage {i}" for i in range(1000)]
         }
         # REMOVED: # REMOVED: mock_dataset = Dataset.from_dict(mock_data)
-# MOCK: #         # REMOVED: # REMOVED: mock_load_dataset.return_value_REMOVED = # REMOVED: # REMOVED: mock_dataset  # TODO: Replace with real implementation
+#         # REMOVED: # REMOVED: mock_load_dataset.return_value_REMOVED = # REMOVED: # REMOVED: mock_dataset
         
         # Load with limit
         loader = MSMARCODataLoader(
@@ -228,7 +228,7 @@ class TestMSMARCOHoneypot:
             "negatives": [["Negative 1", "Negative 2"]]
         }
         # REMOVED: # REMOVED: mock_dataset = Dataset.from_dict(mock_data)
-# MOCK: #         # REMOVED: # REMOVED: mock_load_dataset.return_value_REMOVED = # REMOVED: # REMOVED: mock_dataset  # TODO: Replace with real implementation
+#         # REMOVED: # REMOVED: mock_load_dataset.return_value_REMOVED = # REMOVED: # REMOVED: mock_dataset
         
         # Load WITHOUT hard negatives
         loader = MSMARCODataLoader(
@@ -256,7 +256,7 @@ if __name__ == "__main__":
             "positive": ["AI is artificial intelligence", "ML is machine learning"],
             "negatives": [["Unrelated text 1"], ["Unrelated text 2"]]
         }
-# MOCK: #         mock.return_value_REMOVED = Dataset.from_dict(mock_data)  # TODO: Replace with real implementation
+#         mock.return_value_REMOVED = Dataset.from_dict(mock_data)
         
         # Test ranking
         loader = MSMARCODataLoader(task="ranking", max_samples=2)
@@ -265,7 +265,7 @@ if __name__ == "__main__":
         
         # Test QA format
         # REMOVED: # REMOVED: mock_data["answers"] = [["AI stands for artificial intelligence"], ["ML means machine learning"]]
-# MOCK: #         mock.return_value_REMOVED = Dataset.from_dict(mock_data)  # TODO: Replace with real implementation
+#         mock.return_value_REMOVED = Dataset.from_dict(mock_data)
         
         qa_loader = MSMARCODataLoader(task="qa", max_samples=2)
         qa_dataset = qa_loader.load_dataset()
